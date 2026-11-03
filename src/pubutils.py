@@ -17,14 +17,14 @@ URL_EUTILS = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
 # Sempre JSON
 
 # tool = ferramenta do eutils sendo utilizada
-def url_api_eutils(id_tool: int, first_param: str, sec_param: str, third_param):
+def url_api_eutils(id_tool: int, db='pubmed', term='term', array=None):
   # decide qual ferramenta usar
   match id_tool:
     case 0:
       tool = 'esearch.fcgi?'
       params = {
-        "db": first_param,
-        "term": sec_param,
+        "db": db,
+        "term": term,
         "retmode": "json",
 
         # PENSAR NISSO AQUI
@@ -34,8 +34,8 @@ def url_api_eutils(id_tool: int, first_param: str, sec_param: str, third_param):
     case 1:
       tool = 'esummary'
       params = {
-        "db": first_param,
-        "id": ",".join(third_param),
+        "db": db,
+        "id": ",".join(array),
         "retmode": "json"
       }
 

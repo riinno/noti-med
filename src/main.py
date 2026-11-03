@@ -12,28 +12,33 @@ from array import array
 # Faz a pesquisa na API do Eutils
 
 search_url, params = pubutils.url_api_eutils(0,
-                                            'pubmed', 
-                                            '"digital health" AND wearable*')
+                                            term='"digital health" AND wearable*')
 
-response = requests.get(search_url, params=params)
+response_search = requests.post(search_url, params=params)
 
-print(response)
+print(response_search)
 
 # salva os PMIDs que encontrou
-id_array = array('q', map(int, response.json()["esearchresult"]["idlist"]))
+id_array = array('q', map(int, response_search.json()["esearchresult"]["idlist"]))
 # deleta a resposta da memoria, nao precisamos mais
-del response
+del response_search
 
 # -----------------------------------------------------------------------------------
 # Procura resumos e titulos, e guarda no banco
 
+# cria a request pra essumary
+summary_url, params = pubutils.url_api_eutils(1, 
+                                              array=id_array)
+
 # para cada lote de PMIDs
-# for lote in pubutils.split_chunks(id_array):
-#   for id in lote:
-#     # procura os resumos de cada PMID
-#     summary_url, params = pubutils.url_api_eutils(1,
-#                                                   'pubmed', 
-#                                                   '"digital health" AND wearable*')
+for chunk in pubutils.split_chunks(id_array, 250):
+  print(f"chunk_size: {len(chunk)}")
+  for id in chunk:
+    # procura os resumos de cada PMID
+    # REQUEST ESSUMARY
+    print("a")
+    response_summary = requests.post(summary_url, params=params)
+    
 
 # -----------------------------------------------------------------------------------
 # Criando/Acessando banco de dados
