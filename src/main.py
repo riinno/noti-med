@@ -4,33 +4,31 @@
 # Bibliotecas
 
 import requests
+import dbartigos
+import pubutils
 
 # ------------------------------------------------------
-# Montando o link para conectar com API eutils
+# Faz a pesquisa na API do Eutils
 
-# url do eutils
-url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
-# ferramenta do eutil, no caso esearch
-tool = 'esearch.fcgi?'
+etool_url, params = pubutils.api_eutils('esearch.fcgi?', 1)
 
-search = f'{url}{tool}'
-
-params = {
-  "db": "pubmed",
-  "term": '"digital health" AND wearable*',
-  "retmode": "json",
-  # "retmax": 4000
-}
-
-# ------------------------------------------------------
-# Request e response
-
-response = requests.get(search, params=params)
+response = requests.get(etool_url, params=params)
 response_json = response.json()
 
 print(response_json)
 print(response_json["esearchresult"]["count"])
 
 id_list = response_json["esearchresult"]["idlist"]
+
+# ------------------------------------------------------
+# Criando/Acessando banco de dados
+
+# criando/acessando bd
+conection = dbartigos.connect_db()
+
+# criando tabela (se a tabela já existe, não cria)
+dbartigos.create_table(conection)
+
+conection.close()
 
 # ------------------------------------------------------
