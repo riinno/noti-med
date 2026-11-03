@@ -1,12 +1,11 @@
 # Code by Riinno - Bruno Machado, 2026
 
-# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Bibliotecas
 
-import requests
 from array import array
 
-# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Constantes
 
 # url do eutils (API PubMed)
@@ -17,11 +16,11 @@ URL_EUTILS = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
 # Sempre JSON
 
 # tool = ferramenta do eutils sendo utilizada
-def url_api_eutils(id_tool: int, db='pubmed', term='term', array=None):
+def url_api_eutils(id_tool: int, db='pubmed', term='term', id_array=None):
   # decide qual ferramenta usar
   match id_tool:
     case 0:
-      tool = 'esearch.fcgi?'
+      tool = 'esearch.fcgi'
       params = {
         "db": db,
         "term": term,
@@ -32,10 +31,10 @@ def url_api_eutils(id_tool: int, db='pubmed', term='term', array=None):
       }
 
     case 1:
-      tool = 'esummary'
+      tool = 'esummary.fcgi'
       params = {
         "db": db,
-        "id": ",".join(array),
+        "id": ",".join(map(str, id_array)),
         "retmode": "json"
       }
 
